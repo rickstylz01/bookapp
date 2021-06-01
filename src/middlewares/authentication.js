@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+ const jwt = require('jsonwebtoken');
 const secret = "verySecureSecret";
 
 exports.authenticateUser = (req, res, next) => {
@@ -19,6 +19,15 @@ exports.authenticateUser = (req, res, next) => {
 			return res.status(401).json({message: "invalid authorization token. please login"})
 		}
 		// allow user to continue with request 
+		console.log(decodedToken);
+		req.user = decodedToken;
 		next();
 	})
+}
+
+exports.checkIfAdmin = (req, res, next) => {
+	if (req.user.role !== "admin") {
+		return res.status(401).json({message: "this route is restricted to admin users"})
+	}
+	return next();
 }
